@@ -1,0 +1,282 @@
+"be iMproved, required
+set nocompatible
+
+filetype off "required
+set rtp+=~/.vim/bundle/Vundle.vim
+
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'               "Vundle
+
+Plugin 'preservim/nerdtree'                 "Nerdtree
+
+Plugin 'wesleyche/SrcExpl'                  "SrcExpl
+
+Plugin 'taglist.vim'                        "Taglist
+
+"Plugin 'wesleyche/Trinity'                  "Trinity
+
+Plugin 'MarcWeber/vim-addon-mw-utils'       "snipmate
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+
+Plugin 'peterhoeg/vim-qml'                  "qml, syntax color
+
+Plugin 'airblade/vim-gitgutter'             "Git-gutter
+
+Plugin 'vim-airline/vim-airline'            "airline
+Plugin 'vim-airline/vim-airline-themes'
+
+Plugin 'tpope/vim-fugitive'                 "fugitive
+
+Plugin 'osyo-manga/vim-anzu'                "anzu, counting of search
+
+Plugin 'Yggdroot/indentLine'                "indent guide line
+
+call vundle#end()            " required
+
+filetype plugin indent on    " required
+
+
+"nerdtree
+let NERDTreeWinPos="right"
+let g:NERDTreeWinSize=25
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+let g:NERDTreeNodeDelimiter = "\u00a0"
+
+"SrcExpl
+let g:SrcExpl_winHeight=7
+let g:SrcExpl_pluginList = [
+        \ "__Tag_List__",
+        \ "_NERD_tree_",
+        \ "Source_Explorer"
+    \ ]
+let g:SrcExpl_jumpKey = "<ENTER>"
+let g:SrcExpl_gobackKey = "<SPACE>"
+let g:SrcExpl_updateTagsKey = "<C-\>u" 
+
+"taglist
+let Tlist_Show_One_File=1
+let Tlist_Exit_OnlyWindow=1
+let Tlist_WinWidth=25
+set ut=100
+
+"SnipMate
+let g:snipMate = { 'snippet_version' : 1 }
+
+
+"plugin shortcut
+nmap <F6> :SrcExplToggle<CR><CR>
+nmap <F7> :NERDTreeToggle<CR>
+nmap <F8> :TlistToggle<CR>
+nmap <F9> :TrinityToggleAll<CR>
+
+"for binary file
+nmap <F1> :%! xxd<CR>
+"other shortcut
+nmap <F2> :noh<CR>
+nmap <F4> :Git blame<CR>
+nmap <F5> :e<CR>:call AutoUpdateCscopeAndCtags()<CR><CR>
+
+"show the syntax color"
+syntax enable
+
+"show the line number"
+set number
+
+"set encoding"
+set encoding=utf-8
+
+"not display the coordinate"
+set noruler
+
+"highlight the search targets"
+set hlsearch
+
+"show counts of search
+set shortmess-=S
+
+"ignore the capital or lowercase when searching"
+set ignorecase
+set smartcase
+
+"set autoindent"
+set autoindent
+
+"set code folding
+set foldmethod=manual
+set nofoldenable
+
+"set the tab"
+set expandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set smarttab
+
+"enable confirming"
+set confirm
+
+"record 100 commands"
+set history=100
+
+"show the command typed before"
+set showcmd
+
+"show the mode of vim"
+set showmode
+
+"not changing the line automatically"
+set nowrap
+
+"save automatically"
+set autowrite
+
+"using mouse to move the cursor"
+set mouse=a
+
+"set background color"
+set bg=dark
+
+"support 256 colors"
+set t_Co=256
+
+"cursorline"
+set cursorline
+
+"sign-column for git-gutter"
+set signcolumn=yes
+
+"indent guide line for tabs
+set list lcs=tab:\¦\ 
+
+" key mapping
+inoremap {<CR> {<CR>}<Esc>ko
+
+"recognize the filetype"
+filetype indent on
+
+"set tab for makefile"
+autocmd FileType make setlocal noexpandtab shiftwidth=8 tabstop=8
+
+"set copy & paste"
+"test with vim --version | grep -clipboard"
+"if +clipboard, then it supports"
+set clipboard=unnamed
+
+"set for vim installed from homebrew
+set backspace=2
+
+
+
+
+"vim-plug"
+"call plug#begin('~/.vim/plugged')
+"call plug#end()
+
+
+
+"color configuration"
+"list 250 colors --> curl -s https://gist.githubusercontent.com/HaleTom/89ffe32783f89f403bba96bd7bcd1263/raw/ | bash
+hi Type cterm=bold ctermfg=195
+hi Normal ctermfg=249 ctermbg=233
+hi String ctermfg=77
+hi Comment ctermfg=117
+hi PreProc ctermfg=220
+hi Statement cterm=bold ctermfg=39
+
+hi Number ctermfg=185
+hi link Float Number
+hi Boolean ctermfg=105
+hi Character ctermfg=231
+
+hi LineNr ctermfg=111
+hi CursorLine cterm=none ctermbg=235
+hi CursorLineNr cterm=bold ctermfg=225
+hi StorageClass ctermfg=229
+hi link Structure StorageClass
+hi SignColumn ctermbg=236
+
+hi DiffChange ctermfg=156 ctermbg=18
+hi DiffText cterm=none ctermfg=15 ctermbg=25
+hi DiffAdd cterm=none ctermfg=15 ctermbg=25
+hi DiffDelete cterm=none ctermfg=15 ctermbg=25
+
+hi cCustomFunc ctermfg=159
+hi cCustomClass ctermfg=147
+
+
+hi ModeMsg cterm=bold ctermfg=221
+"hi WarningMsg ctermfg=121
+"hi MoreMsg ctermfg=121
+
+"status line"
+" set statusline=
+" set statusline+=%2*\ %<%F\                                " File+path
+" set statusline+=%3*\ %=\ %{''.(&fenc!=''?&fenc:&enc).''}\ " Encoding
+" set statusline+=%6*\ %5l,%3c\                             " RowColnumber
+" hi User2 ctermfg=15  ctermbg=237
+" hi User3 ctermfg=15  ctermbg=237
+" hi User6 ctermfg=0  ctermbg=32
+" set laststatus=2
+
+
+
+"cscope & ctags settings
+set cscopetag " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
+set csto=0
+"set tags=./tags,../tags
+
+" add any cscope database in current directory
+if filereadable("cscope.out")
+    cs add cscope.out
+" else add the database pointed to by environment variable
+elseif $CSCOPE_DB != ""
+    cs add $CSCOPE_DB
+endif
+
+" show msg when any other cscope db added
+set cscopeverbose
+
+" key mapping for cscope
+"   's'   symbol: find all references to the token under cursor
+"   'g'   global: find global definition(s) of the token under cursor
+"   'c'   calls:  find all calls to the function name under cursor
+"   't'   text:   find all instances of the text under cursor
+"   'e'   egrep:  egrep search for the word under cursor
+"   'f'   file:   open the filename under cursor
+"   'i'   includes: find files that include the filename under cursor
+"   'd'   called: find functions that function under cursor calls
+" You can use CTRL-T to go back to where you were before the search.
+
+" jump to target directly
+nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+" jump to target with a new vertical split window
+nmap <C-\><C-\>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\><C-\>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\><C-\>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\><C-\>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\><C-\>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\><C-\>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-\><C-\>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-\><C-\>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
+
+" update cscope automatically
+fun! AutoUpdateCscopeAndCtags()
+  let UpdateCscopeDB = 'cscope -Rbqk'
+  "let UpdateCtagsDB = 'ctags -R'
+  let Res = system(UpdateCscopeDB)
+  "let Res = system(UpdateCtagsDB)
+  unlet UpdateCscopeDB
+  "unlet UpdateCtagsDB
+  unlet Res
+  exe "cs reset"
+endfun
+nmap <C-\>u :call AutoUpdateCscopeAndCtags()<CR><CR>

@@ -1,0 +1,26 @@
+[user]
+    name = chunhaos0316
+    email = chunhaos0316@gmail.com
+[core]
+    #pager = cat
+    editor = vim
+[filter "lfs"]
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+    clean = git-lfs clean -- %f
+[diff]
+    tool = vimdiff
+[difftool]
+    prompt = false
+    trustExitCode = true
+[alias]
+    l = log --oneline --graph --decorate --color=always
+    la = log --oneline --graph --decorate --all --color=always
+    d = difftool
+    dh = difftool HEAD~ HEAD
+    dn = difftool --name-only
+    dnh = difftool HEAD~ HEAD --name-only
+    dfh = diff HEAD~ HEAD
+    su = status -uno
+    s = status
