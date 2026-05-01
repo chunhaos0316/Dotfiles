@@ -3,8 +3,12 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+
+
 -- 2. Setup lazy.nvim path
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+
+
 
 -- 3. Bootstrap lazy.nvim
 -- Automatically clone lazy.nvim if it's not already installed.
@@ -20,20 +24,29 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+
+
 -- 4. Initialize lazy.nvim and load plugins
 require("lazy").setup({
-  -- Core utilities
+  -- vim-sensible
   "tpope/vim-sensible",
   
-  -- UI Improvements
+  -- lualine
   {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      require('lualine').setup()
-    end
+      require('lualine').setup({
+        sections = {
+          lualine_c = {
+            { 'aerial' }
+          }
+        }
+      })
+    end,
   },
   
+  -- bufferline
   {
     "akinsho/bufferline.nvim",
     version = "*",
@@ -43,12 +56,124 @@ require("lazy").setup({
     end
   },
 
-  -- Icons (Standalone)
+  -- nvim-web-devicons
   "nvim-tree/nvim-web-devicons",
 
-  -- Syntax and LSP
+  -- nvim-treesitter
   "nvim-treesitter/nvim-treesitter",
+
+  -- nvim-lspconfig
   "neovim/nvim-lspconfig",
+
+  -- neo-tree
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+        "nvim-lua/plenary.nvim",
+        "nvim-tree/nvim-web-devicons",
+        "MunifTanjim/nui.nvim",
+    },
+    config = function()
+      require("neo-tree").setup({
+        window = {
+          position = "right",
+          width = 30,
+        },
+
+        filesystem = {
+          filtered_items = {
+            visible = true,
+            hide_dotfiles = false,
+          },
+        },
+      })
+    end,
+  },
+
+  -- nvim-autopairs
+  {
+    'windwp/nvim-autopairs',
+    event = "InsertEnter",
+    config = function()
+      require("nvim-autopairs").setup({
+        check_ts = true,
+      })
+    end,
+  },
+
+  -- aerial.nvim
+  {
+    'stevearc/aerial.nvim',
+    opts = {
+      layout = {
+        max_width = { 40, 0.2 },
+        min_width = 20,
+        default_direction = "prefer_left",
+      },
+
+      show_guides = true,
+
+      filter_kind = {
+        "Class",
+        "Function",
+        "Variable",
+        "Constant",
+        "Macro",
+        "Struct",
+        "Enum",
+        "Method",
+        "Field",
+      },
+
+      backends = {
+        ["_"] = { "treesitter", "lsp" },
+      },
+    },
+
+    keys = {
+      { "<F7>", "<cmd>AerialToggle!<CR>", desc = "Trigger for Aerial" },
+
+      { "{", "<cmd>AerialPrev<CR>", desc = "Jump to the previous symbol" },
+      { "}", "<cmd>AerialNext<CR>", desc = "Jump to the next symbol" },
+    },
+
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons"
+    },
+  },
+
+  -- gitsigns
+  {
+    "lewis6991/gitsigns.nvim",
+    opts = {
+      signs = {
+        add = { text = "+" },
+        change = { text = "+" },
+        delete = { text = "_" },
+        topdelete = { text = "‾" },
+        changedelete = { text = "~" },
+      },
+
+      current_line_blame = true,
+    }
+  },
+
+  -- Indent-blankline
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    opts = {
+      indent = {
+        char = "¦", -- ("|" or "¦")
+      },
+
+      whitespace = {
+        remove_blankline_trail = false,
+      },
+    },
+  },
 
   -- Tokyonight Colorscheme
   {
@@ -90,8 +215,6 @@ require("lazy").setup({
         hl.Identifier = { fg = "#00D7FF" }
         hl.Function = { fg = "#00D7FF" }
 
-        -- *** 優化 Treesitter (現代高亮) 以符合 Console 風格 ***
-        -- 很多現代高亮會給結構體成員顏色，但截圖中沒有
         hl["@property"] = { fg = "#DCDCDC" }
         hl["@parameter"] = { fg = "#DCDCDC" }
 
@@ -107,6 +230,22 @@ require("lazy").setup({
   },
 })
 
+-- Keymap
+vim.keymap.set('n', '<F8>', ':Neotree toggle<CR>', { noremap = true, silent = true }) -- Neo Tree
+
+vim.keymap.set('n', '<leader>bn', '<cmd>BufferLineCycleNext<CR>', { desc = "Buffer next" })
+vim.keymap.set('n', '<leader>bp', '<cmd>BufferLineCyclePrev<CR>', { desc = "Buffer previous" })
+for i = 1, 9 do
+  vim.keymap.set('n', '<leader>' .. i, '<cmd>BufferLineGoToBuffer ' .. i .. '<CR>', { desc = "Jump to " .. i .. " Buffer" })
+end
+vim.keymap.set('n', '<leader>bc', '<cmd>Bdelete<CR>', { desc = "Close current Buffer" })
+vim.keymap.set('n', '<leader>br', '<cmd>BufferLineCloseRight<CR>', { desc = "Close all buffers on the right" })
+
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR><Esc>', { desc = "Disable highlight" })
+vim.keymap.set('n', '<F4>', '<cmd>Gitsigns blame_line<CR>')
+
+
+
 -- 5. Basic Neovim settings
 vim.opt.number = true             -- Show line numbers
 vim.opt.relativenumber = false    -- Show relative line numbers for easier jumping
@@ -115,3 +254,26 @@ vim.opt.expandtab = true          -- Use spaces instead of tabs
 vim.opt.smartindent = true        -- Insert indents automatically
 vim.opt.cursorline = true         -- Highlight the current line
 vim.opt.termguicolors = true      -- Enable 24-bit RGB color in the TUI
+
+
+
+-- 6. AutoCMD
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "make",
+  callback = function()
+    vim.opt_local.expandtab = false
+    vim.opt_local.tabstop = 8
+    vim.opt_local.shiftwidth = 8
+    vim.opt_local.softtabstop = 0
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "c", "cpp" },
+  callback = function()
+    vim.cmd("Neotree show")
+    vim.cmd("wincmd p")
+
+    vim.cmd("AerialOpen")
+  end,
+})
