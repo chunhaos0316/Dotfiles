@@ -51,9 +51,24 @@ require("lazy").setup({
     "akinsho/bufferline.nvim",
     version = "*",
     dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = {
+        { "<leader>bn", "<cmd>BufferLineCycleNext<CR>", desc = "Buffer next" },
+        { "<leader>bp", "<cmd>BufferLineCyclePrev<CR>", desc = "Buffer previous" },
+        { "<leader>bc", "<cmd>Bdelete<CR>", desc = "Close current Buffer" },
+        { "<leader>br", "<cmd>BufferLineCloseRight<CR>", desc = "Close all buffers on the right" },
+    },
     config = function()
       require("bufferline").setup({})
-    end
+
+      for i = 1, 9 do
+        vim.keymap.set("n", "<leader>" .. i, function()
+          require("bufferline").go_to(i, true)
+        end, {
+          desc = "Go to Buffer " .. i,
+          silent = true,
+        })
+      end
+    end,
   },
 
   -- nvim-web-devicons
@@ -74,6 +89,11 @@ require("lazy").setup({
         "nvim-tree/nvim-web-devicons",
         "MunifTanjim/nui.nvim",
     },
+
+    keys = {
+        { "<F8>", ":Neotree toggle<CR>", silent = true },
+    },
+
     config = function()
       require("neo-tree").setup({
         window = {
@@ -147,6 +167,10 @@ require("lazy").setup({
   -- gitsigns
   {
     "lewis6991/gitsigns.nvim",
+    keys = {
+        { "<F4>", "<cmd>Gitsigns blame_line<CR>" },
+    },
+
     opts = {
       signs = {
         add = { text = "+" },
@@ -231,18 +255,7 @@ require("lazy").setup({
 })
 
 -- Keymap
-vim.keymap.set('n', '<F8>', ':Neotree toggle<CR>', { noremap = true, silent = true }) -- Neo Tree
-
-vim.keymap.set('n', '<leader>bn', '<cmd>BufferLineCycleNext<CR>', { desc = "Buffer next" })
-vim.keymap.set('n', '<leader>bp', '<cmd>BufferLineCyclePrev<CR>', { desc = "Buffer previous" })
-for i = 1, 9 do
-  vim.keymap.set('n', '<leader>' .. i, '<cmd>BufferLineGoToBuffer ' .. i .. '<CR>', { desc = "Jump to " .. i .. " Buffer" })
-end
-vim.keymap.set('n', '<leader>bc', '<cmd>Bdelete<CR>', { desc = "Close current Buffer" })
-vim.keymap.set('n', '<leader>br', '<cmd>BufferLineCloseRight<CR>', { desc = "Close all buffers on the right" })
-
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR><Esc>', { desc = "Disable highlight" })
-vim.keymap.set('n', '<F4>', '<cmd>Gitsigns blame_line<CR>')
 
 
 
