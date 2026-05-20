@@ -267,6 +267,8 @@ vim.opt.expandtab = true          -- Use spaces instead of tabs
 vim.opt.smartindent = true        -- Insert indents automatically
 vim.opt.cursorline = true         -- Highlight the current line
 vim.opt.termguicolors = true      -- Enable 24-bit RGB color in the TUI
+vim.opt.ignorecase = true         -- Case insensitive when searching
+vim.opt.smartcase = true          -- Case sensitive when there is upper case in the target strings
 
 
 
@@ -289,5 +291,36 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.cmd("wincmd p")
 
     vim.cmd("AerialOpen")
+  end,
+})
+
+vim.api.nvim_create_autocmd("QuitPre", {
+  callback = function()
+    -- Get all current windows on the screen
+    local invalid_win = {}
+    local wins = vim.api.nvim_list_wins()
+    local c_file_count = 0
+
+    for _, win in ipairs(wins) do
+      local buf = vim.api.nvim_win_get_buf(win)
+      local ft = vim.api.nvim_get_option_value("filetype", { buf = buf })
+
+      -- Check if the window is Neo-tree or Aerial
+      if ft == "neo-tree" or ft == "aerial" then
+        table.insert(invalid_win, win)
+      -- Check if it's a regular file (excluding special buffers and empty buffers)
+      elseif ft ~= "" and vim.api.nvim_get_option_value("buftype", { buf = buf }) == "" then
+        c_file_count = c_file_count + 1
+      end
+    end
+
+    -- If only 1 regular file is left (the one you are currently closing)
+    -- and there are remaining Neo-tree or Aerial windows, close them as well
+    if c_file_count <= 1 then
+      for _, win in ipairs(invalid_win) do
+        -- Safely close the remaining plugin windows
+        pcall(vim.api.nvim_win_close, win, true)
+      end
+    end
   end,
 })
