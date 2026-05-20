@@ -284,6 +284,7 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "c", "cpp" },
   callback = function()
+    require("lazy").load({ plugins = { "neo-tree.nvim", "aerial.nvim" } })
     vim.cmd("Neotree show")
     vim.cmd("wincmd p")
 
