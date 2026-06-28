@@ -167,9 +167,6 @@ require("lazy").setup({
   -- gitsigns
   {
     "lewis6991/gitsigns.nvim",
-    keys = {
-        { "<F4>", "<cmd>Gitsigns blame_line<CR>" },
-    },
 
     opts = {
       signs = {
