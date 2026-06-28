@@ -80,6 +80,30 @@ require("lazy").setup({
   -- nvim-lspconfig
   "neovim/nvim-lspconfig",
 
+  -- cscope_maps.nvim
+  {
+    "dhananjaylatkar/cscope_maps.nvim",
+    event = "BufReadPost",
+    dependencies = {
+        "nvim-telescope/telescope.nvim",
+    },
+
+    config = function()
+      require("cscope_maps").setup({
+        disable_maps = false,
+        skip_input_conversion = true,
+        prefix = "<leader>c",
+
+        cscope = {
+          db_file = "./GTAGS",
+          exec = "gtags-cscope",
+          picker = "telescope",
+          auto_refresh = true,
+        }
+      })
+  end,
+  },
+
   -- neo-tree
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -282,6 +306,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "c", "cpp" },
+  once = true,
   callback = function()
     require("lazy").load({ plugins = { "neo-tree.nvim", "aerial.nvim" } })
     vim.cmd("Neotree show")
