@@ -192,17 +192,50 @@ require("lazy").setup({
   {
     "lewis6991/gitsigns.nvim",
 
-    opts = {
-      signs = {
-        add = { text = "+" },
-        change = { text = "+" },
-        delete = { text = "_" },
-        topdelete = { text = "‾" },
-        changedelete = { text = "~" },
-      },
+    config = function()
+      local gitsigns = require("gitsigns")
 
-      current_line_blame = true,
-    }
+      gitsigns.setup({
+        signs = {
+          add = { text = "+" },
+          change = { text = "|" },
+          delete = { text = "_" },
+          topdelete = { text = "‾" },
+          changedelete = { text = "~" },
+          untracked = { text = "┆" },
+        },
+
+        current_line_blame = true,
+
+        on_attach = function(bufnr)
+          local function map(mode, lhs, rhs, desc)
+            vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
+          end
+
+          -- Navigation
+          map("n", "]c", function()
+            if vim.wo.diff then
+              vim.cmd.normal({ "]c", bang = true })
+            else
+              gitsigns.nav_hunk("next")
+            end
+          end, "Next hunk")
+
+          map("n", "[c", function()
+            if vim.wo.diff then
+              vim.cmd.normal({ "[c", bang = true })
+            else
+              gitsigns.nav_hunk("prev")
+            end
+          end, "Prev hunk")
+
+          map('n', '<F6>', gitsigns.blame)
+          map('n', '<leader>hd', gitsigns.diffthis)
+          map('n', '<leader>hp', gitsigns.preview_hunk)
+          map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
+        end,
+      })
+    end,
   },
 
   -- Indent-blankline

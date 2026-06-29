@@ -167,13 +167,19 @@ Shows Git diff signs directly inside the editor.
 
 Enabled signs:
 
-- `+`: added or changed
+- `+`: added
+- `|`: changed
 - `_`: deleted
 - `‾`: top delete
 - `~`: changed with deletions
 - `current_line_blame = true`: show blame info for the current line
 
-- No custom keybindings
+Keybindings:
+
+- `<F6>`: Gitsigns blame
+- `<leader>hd`: Gitsigns diffthis
+- `<leader>hp`: Gitsigns preview_hunk
+- `<leader>tb`: Gitsigns toggle_current_line_blame
 
 ### `indent-blankline.nvim`
 
