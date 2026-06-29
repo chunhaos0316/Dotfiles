@@ -30,10 +30,9 @@ install_macos_packages() {
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
 
-    local packages=(vim neovim git zsh wget tree tmux cscope universal-ctags gcc)
+    local packages=(vim neovim git zsh wget tree tmux gcc global)
     for pkg in "${packages[@]}"; do
         local cmd=$pkg
-        [[ "$pkg" == "universal-ctags" ]] && cmd="ctags"
         [[ "$pkg" == "neovim" ]] && cmd="nvim"
 
         if is_installed "$cmd"; then
@@ -47,10 +46,9 @@ install_macos_packages() {
 install_linux_packages() {
     echo -e "${BLUE}==> [Linux] Installing packages via APT...${NC}"
     sudo apt-get update -y
-    local packages=(vim neovim git zsh wget tree build-essential tmux cscope universal-ctags)
+    local packages=(vim neovim git zsh wget tree build-essential tmux global)
     for pkg in "${packages[@]}"; do
         local cmd=$pkg
-        [[ "$pkg" == "universal-ctags" ]] && cmd="ctags"
         [[ "$pkg" == "neovim" ]] && cmd="nvim"
 
         if is_installed "$cmd"; then
@@ -122,10 +120,10 @@ setup_symlinks() {
         "Zsh/zshrc:$HOME/.zshrc"
         "Zsh/p10k.zsh:$HOME/.p10k.zsh"
         "Vim/vimrc:$HOME/.vimrc"
-        "Vim/c.vim:$HOME/.vim/after/ftplugin/c.vim" # Link c.vim for C filetype plugins
+        # "Vim/c.vim:$HOME/.vim/after/ftplugin/c.vim" # Link c.vim for C filetype plugins
         "Git/gitconfig:$HOME/.gitconfig"
         "Tmux/tmux.conf:$HOME/.tmux.conf"
-        "SnipMate:$HOME/.vim/snippets"
+        # "SnipMate:$HOME/.vim/snippets"
         "Neovim/init.lua:$HOME/.config/nvim/init.lua"
     )
 
@@ -191,7 +189,7 @@ esac
 setup_nerd_fonts
 setup_zsh_advanced
 setup_symlinks
-setup_vim_plugins
+# setup_vim_plugins
 setup_neovim_plugins
 
 echo -e "${GREEN}All done! Please restart your terminal and set font to MesloLGS NF.${NC}"
