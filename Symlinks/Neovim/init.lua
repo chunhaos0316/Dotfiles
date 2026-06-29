@@ -80,6 +80,66 @@ require("lazy").setup({
   -- nvim-lspconfig
   "neovim/nvim-lspconfig",
 
+  -- telescope.nvim
+  {
+    "nvim-telescope/telescope.nvim",
+    branch = "0.1.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+      },
+    },
+
+    keys = {
+      { "<leader>ff", "<cmd>Telescope find_files<CR>",  desc = "Find files" },
+      { "<leader>fg", "<cmd>Telescope live_grep<CR>",   desc = "Live grep" },
+      { "<leader>fb", "<cmd>Telescope buffers<CR>",     desc = "Find buffers" },
+      { "<leader>fh", "<cmd>Telescope help_tags<CR>",   desc = "Help tags" },
+    },
+
+    config = function()
+      local telescope = require("telescope")
+      local actions   = require("telescope.actions")
+
+      telescope.setup({
+        defaults = {
+          mappings = {
+            i = {
+              ["<C-k>"] = actions.move_selection_previous,
+              ["<C-j>"] = actions.move_selection_next,
+              ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+              ["<Esc>"] = actions.close,
+            },
+          },
+
+          file_ignore_patterns = {
+            "node_modules",
+            ".git/",
+            "%.o",
+            "%.a",
+            "%.out",
+          },
+        },
+
+        pickers = {
+          find_files = {
+            hidden = true,
+          },
+          live_grep = {
+            additional_args = function()
+              return { "--hidden" }
+            end,
+          },
+        },
+      })
+
+      -- Load fzf native extension if available
+      pcall(telescope.load_extension, "fzf")
+    end,
+  },
+
   -- cscope_maps.nvim
   {
     "dhananjaylatkar/cscope_maps.nvim",
